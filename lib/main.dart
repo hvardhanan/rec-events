@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rec_events/screens/bottom_navbar.dart';
 
+
 void main() {
   runApp(const MyApp());
 }

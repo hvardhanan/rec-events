@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:rec_events/screens/ticket_view.dart';
 import 'package:rec_events/utils/app_styles.dart';
-import 'package:rec_events/widgets/thick_container.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

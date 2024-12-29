@@ -1,6 +1,8 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:rec_events/screens/home_screen.dart';
+import 'package:rec_events/screens/login_screen.dart';
+import 'package:rec_events/screens/otp_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});
@@ -13,8 +15,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
   int _selectedIndex = 0;
   static final List<Widget> _pages = <Widget>[
     const HomeScreen(),
-    const Center(child: Text('Tickets')),
-    const Center(child: Text('Profile')),
+    const OtpScreen(),
+    const LoginScreen(),
   ];
 
   void onTap(int index) {
