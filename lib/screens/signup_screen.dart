@@ -17,7 +17,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _rollNumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final AppwriteService _appwriteService = AppwriteService();
 
   bool _obscurePassword = true;
@@ -133,8 +134,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                   onPressed: _togglePasswordVisibility,
-                  icon: Icon(
-                      _obscurePassword ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(_obscurePassword
+                      ? Icons.visibility
+                      : Icons.visibility_off),
                 ),
               ),
               obscureText: _obscurePassword,

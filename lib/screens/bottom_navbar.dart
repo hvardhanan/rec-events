@@ -14,7 +14,7 @@ class BottomNavbar extends StatefulWidget {
 class _BottomNavbarState extends State<BottomNavbar> {
   int _selectedIndex = 0;
   static final List<Widget> _pages = <Widget>[
-    const HomeScreen(),
+    HomeScreen(),
     const OtpScreen(),
     const LoginScreen(),
   ];

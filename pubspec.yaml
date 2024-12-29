@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   fluentui_icons: ^1.0.0
   gap: ^3.0.1
-  appwrite: ^13.1.0
+  appwrite: ^13.0.0
   flutter_otp_text_field: ^1.1.0+2
 
 dev_dependencies:

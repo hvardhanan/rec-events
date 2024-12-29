@@ -3,8 +3,11 @@ import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:rec_events/controllers/appwrite_controllers.dart';
+import 'package:rec_events/screens/bottom_navbar.dart';
 import 'package:rec_events/screens/signup_screen.dart';
 import 'package:rec_events/utils/app_styles.dart';
+
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final AppwriteService _appwriteService = AppwriteService(); 
+  final AppwriteService _appwriteService = AppwriteService();
 
   bool _obscureText = true;
   Session? session;
@@ -35,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login(String email, String password) async {
+  void _login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
@@ -45,18 +48,22 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
-
     try {
-      session = await _appwriteService.loginEmailPassword(email: email, password: password);
+      var session = await _appwriteService.loginEmailPassword(
+        email: email,
+        password: password,
+      );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login Successful!')),
       );
-      // Navigate to the next screen here (e.g., home screen)
-    } catch (e) {
+
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => BottomNavbar()));
+
+    } on AppwriteException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error logging in: $e')),
       );
-      print('Error logging in: $e');
     }
   }
 
@@ -138,7 +145,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const Gap(20),
                   ElevatedButton(
-                    onPressed: () {_login(_emailController.text, _passwordController.text);},
+                    onPressed: () {
+                      _login();
+                    },
                     child: const Text('Login'),
                   ),
                   const Gap(20),

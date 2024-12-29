@@ -38,27 +38,24 @@ class AppwriteService {
     }
   }
 
-
   /// Login user with email and password
   Future<Session?> loginEmailPassword({
     required String email,
     required String password,
   }) async {
     try {
-      User? user = await account.get();
-      if(user != null) {
-        await account.deleteSession(sessionId: user.$id);
-      }
+      await account.deleteSessions();
       // Ensure all previous sessions are cleared
       final session = await account.createEmailPasswordSession(
         email: email,
         password: password,
       );
+
       print('User logged in successfully: ${session.$id}');
       return session;
     } on AppwriteException catch (e) {
       print('Error logging in: ${e}');
-      rethrow;
+      // rethrow;
     }
   }
 
