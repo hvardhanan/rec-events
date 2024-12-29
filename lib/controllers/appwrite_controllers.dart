@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
 
 class AppwriteService {
   final Client client = Client();
@@ -7,43 +8,68 @@ class AppwriteService {
   late final Storage storage;
 
   AppwriteService() {
-    client.setEndpoint('https://cloud.appwrite.io/v1').setProject('rec-events');
+    client
+        .setEndpoint(
+            'https://cloud.appwrite.io/v1') // Replace with your Appwrite endpoint
+        .setProject('rec-events');
     account = Account(client);
     databases = Databases(client);
     storage = Storage(client);
   }
 
-  Future<void> sendEmailOTP(String email) async {
+  /// Create a new user
+  Future<void> createUser({
+    required String userId,
+    required String name,
+    required String email,
+    required String password,
+  }) async {
     try {
-      final response = await account.createEmailToken(
-        userId: ID.unique(),
-        email: email,
-      );
-      print('OTP sent to $email: User ID - ${response.userId}');
-    } catch (error) {
-      print('Error sending OTP: $error');
-    }
-  }
-
-  Future<void> verifyEmailOTP(String userId, String otp) async {
-    try {
-      final session = await account.createSession(
+      final user = await account.create(
         userId: userId,
-        secret: otp,
+        name: name,
+        email: email,
+        password: password,
       );
-      print('User logged in successfully: Session ID - ${session.$id}');
-    } catch (error) {
-      print('Error verifying OTP: $error');
+      print('User created successfully: ${user.$id}');
+    } on AppwriteException catch (e) {
+      print('Error creating user: ${e.message}');
+      rethrow;
     }
   }
 
+
+  /// Login user with email and password
+  Future<Session?> loginEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      User? user = await account.get();
+      if(user != null) {
+        await account.deleteSession(sessionId: user.$id);
+      }
+      // Ensure all previous sessions are cleared
+      final session = await account.createEmailPasswordSession(
+        email: email,
+        password: password,
+      );
+      print('User logged in successfully: ${session.$id}');
+      return session;
+    } on AppwriteException catch (e) {
+      print('Error logging in: ${e}');
+      rethrow;
+    }
+  }
+
+  /// Logout current session
   Future<void> logout() async {
     try {
       await account.deleteSession(sessionId: 'current');
       print('Logged out successfully');
-    } catch (error) {
-      print('Error during logout: $error');
+    } on AppwriteException catch (e) {
+      print('Error during logout: ${e.message}');
+      rethrow;
     }
   }
-
 }
