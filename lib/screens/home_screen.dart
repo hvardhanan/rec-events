@@ -1,75 +1,107 @@
+import 'package:appwrite/models.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:rec_events/controllers/appwrite_controllers.dart';
+import 'package:rec_events/screens/login_screen.dart';
 import 'package:rec_events/screens/ticket_view.dart';
 import 'package:rec_events/utils/app_styles.dart';
 
-
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+  final AppwriteService _appwriteService = AppwriteService();
 
   @override
   Widget build(BuildContext context) {
+    AppwriteService _appwriteService = AppwriteService();
     return Scaffold(
-      backgroundColor: Styles.primaryColor,
-      body: ListView(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const Gap(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        backgroundColor: Styles.primaryColor,
+        body: ListView(
+          children: [
+            Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const Gap(10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Hello There👋', style: Styles.headlineStyle3,),
-                        Gap(5),
-                        Text('REC EVENTS', style: Styles.headlineStyle1,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  _appwriteService.logout();
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginScreen()));
+                                },
+                                child: Text('Log Out')),
+                            Text(
+                              'Hello There👋',
+                              style: Styles.headlineStyle3,
+                            ),
+                            Gap(5),
+                            Text(
+                              'REC EVENTS',
+                              style: Styles.headlineStyle1,
+                            ),
+                          ],
+                        ),
+                        Container(
+                          height: 50,
+                          width: 50,
+                          child: ImageIcon(
+                              AssetImage('assets/images/REC-transparent.png'),
+                              color: Styles.textColor),
+                        ),
                       ],
                     ),
+                    const Gap(25),
                     Container(
-                      height: 50,
-                      width: 50,
-                      child: ImageIcon(AssetImage('assets/images/REC-transparent.png'), color: Styles.textColor),
+                      decoration: BoxDecoration(
+                        color: Styles.secondaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Icon(
+                            FluentSystemIcons.ic_fluent_search_regular,
+                            color: Styles.primaryColor,
+                          ),
+                          Text(
+                            ' Search',
+                            style: Styles.headlineStyle4
+                                .copyWith(color: Colors.white),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(25),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Upcoming Events',
+                          style: Styles.headlineStyle2,
+                        ),
+                        InkWell(
+                            onTap: () => print('See All'),
+                            child: Text(
+                              'See All',
+                              style: Styles.textStyle
+                                  .copyWith(color: Styles.accentColor),
+                            )),
+                      ],
                     ),
                   ],
-                ),
-              const Gap(25),
-              Container(
-                decoration: BoxDecoration(
-                  color: Styles.secondaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    Icon(FluentSystemIcons.ic_fluent_search_regular, color: Styles.primaryColor,),
-                    Text(' Search', style: Styles.headlineStyle4.copyWith(color: Colors.white), )
-                  ],
-                ),
-              ),
-              const Gap(25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Upcoming Events', style: Styles.headlineStyle2,),
-                  InkWell(
-                    onTap: () => print('See All'),
-                    child: Text('See All', style: Styles.textStyle.copyWith(color: Styles.accentColor),)
-                  ),
-
-                ],
-              ),
-              ],
-            )
-          ),
-          Gap(5),
-          TicketView(),
-        ],
-      )
-    );
-  } 
+                )),
+            Gap(5),
+            TicketView(),
+          ],
+        ));
+  }
 }

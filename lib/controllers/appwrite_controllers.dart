@@ -10,7 +10,7 @@ class AppwriteService {
 
   AppwriteService() {
     client
-        .setEndpoint(dotenv.env['API_ENDPOINT']!) // Replace with your Appwrite endpoint
+        .setEndpoint(dotenv.env['API_ENDPOINT']!)
         .setProject(dotenv.env['PROJECT_NAME']!);
         
     account = Account(client);
@@ -39,14 +39,11 @@ class AppwriteService {
     }
   }
 
-  /// Login user with email and password
   Future<Session?> loginEmailPassword({
     required String email,
     required String password,
   }) async {
     try {
-      await account.deleteSessions();
-      // Ensure all previous sessions are cleared
       final session = await account.createEmailPasswordSession(
         email: email,
         password: password,
