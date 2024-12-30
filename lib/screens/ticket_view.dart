@@ -31,12 +31,7 @@ class TicketView extends StatelessWidget {
                       ThickContainer(),
                       Expanded(
                         child: SizedBox(
-                        height: 24,
-                        child: Flex(
-                          direction: Axis.horizontal,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(5, (index) => Text("-", style: TextStyle(color: Colors.white),)),
-                        ),
+                        height: 24
                       )),
                       ThickContainer(),
                       const Spacer(),

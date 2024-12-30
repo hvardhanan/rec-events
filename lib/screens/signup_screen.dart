@@ -1,6 +1,8 @@
+import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:rec_events/controllers/appwrite_controllers.dart';
+import 'package:rec_events/screens/bottom_navbar.dart';
 import 'package:rec_events/utils/app_styles.dart';
 import 'package:rec_events/screens/otp_screen.dart';
 import 'package:rec_events/screens/login_screen.dart';
@@ -36,7 +38,7 @@ class _SignupScreenState extends State<SignupScreen> {
     });
   }
 
-  void _signUp() {
+  Future<void> _signUp() async {
     final name = _nameController.text.trim();
     final rollNumber = _rollNumberController.text.trim();
     final email = _emailController.text.trim();
@@ -68,11 +70,16 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    // Proceed with the signup process (e.g., send data to the backend)
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const OtpScreen()),
-    );
+    try {
+      final res = await _appwriteService.createUser(userId: _rollNumberController.text, name: _nameController.text, email: _emailController.text, password: _passwordController.text);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User created successfully!')),
+      );
+    } on AppwriteException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error when signing up : ${e}')),
+      );
+    }
   }
 
   @override
@@ -83,7 +90,6 @@ class _SignupScreenState extends State<SignupScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: SafeArea(
-          
           child: Container(
             height: MediaQuery.of(context).size.height,
             child: Column(
@@ -134,13 +140,14 @@ class _SignupScreenState extends State<SignupScreen> {
                 const Gap(10),
                 SizedBox(
                   width: screenWidth * 0.9,
-                child: TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
+                  child: TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),),
+                ),
                 const Gap(10),
                 SizedBox(
                   width: screenWidth * 0.9,
