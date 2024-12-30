@@ -1,13 +1,9 @@
-import 'package:appwrite/appwrite.dart';
-import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:rec_events/controllers/appwrite_controllers.dart';
 import 'package:rec_events/screens/bottom_navbar.dart';
 import 'package:rec_events/screens/signup_screen.dart';
 import 'package:rec_events/utils/app_styles.dart';
-
-import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,9 +19,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final AppwriteService _appwriteService = AppwriteService();
 
   bool _obscureText = true;
-  Session? session;
+  bool _isLoading = false;
 
-  void _toggle() {
+  void _togglePasswordVisibility() {
     setState(() {
       _obscureText = !_obscureText;
     });
@@ -38,32 +34,50 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
-      return;
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
     }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'Enter a valid email';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
     try {
-      var session = await _appwriteService.loginEmailPassword(
-        email: email,
-        password: password,
+      await _appwriteService.loginEmailPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
       );
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login Successful!')),
       );
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => BottomNavbar()));
-
-    } on AppwriteException catch (e) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BottomNavbar()),
+      );
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error logging in: $e')),
       );
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -74,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        body: Container(
+        body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Form(
@@ -83,9 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ImageIcon(
-                    const AssetImage('assets/images/REC-transparent.png'),
-                    size: 150,
+                  Image.asset(
+                    'assets/images/REC-transparent.png',
+                    height: 150,
                     color: Colors.indigo,
                   ),
                   Text(
@@ -105,15 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelText: 'Email',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                          return 'Enter a valid email';
-                        }
-                        return null;
-                      },
+                      validator: _validateEmail,
                     ),
                   ),
                   const Gap(20),
@@ -125,30 +131,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelText: 'Password',
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
-                          onPressed: _toggle,
-                          icon: Icon(_obscureText
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+                          onPressed: _togglePasswordVisibility,
+                          icon: Icon(
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
                       obscureText: _obscureText,
+                      validator: _validatePassword,
                     ),
                   ),
                   const Gap(20),
-                  ElevatedButton(
-                    onPressed: () {
-                      _login();
-                    },
-                    child: const Text('Login'),
+                  SizedBox(
+                    width: screenWidth * 0.9,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _login,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text('Login'),
+                    ),
                   ),
                   const Gap(20),
                   Row(

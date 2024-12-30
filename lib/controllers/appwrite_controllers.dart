@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppwriteService {
   final Client client = Client();
@@ -9,9 +10,9 @@ class AppwriteService {
 
   AppwriteService() {
     client
-        .setEndpoint(
-            'https://cloud.appwrite.io/v1') // Replace with your Appwrite endpoint
-        .setProject('rec-events');
+        .setEndpoint(dotenv.env['API_ENDPOINT']!) // Replace with your Appwrite endpoint
+        .setProject(dotenv.env['PROJECT_NAME']!);
+        
     account = Account(client);
     databases = Databases(client);
     storage = Storage(client);
@@ -55,7 +56,7 @@ class AppwriteService {
       return session;
     } on AppwriteException catch (e) {
       print('Error logging in: ${e}');
-      // rethrow;
+      rethrow;
     }
   }
 
