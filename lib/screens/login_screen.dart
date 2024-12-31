@@ -21,17 +21,15 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
   bool _isLoading = false;
 
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
-
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() => _obscureText = !_obscureText);
   }
 
   String? _validateEmail(String? value) {
@@ -73,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => BottomNavbar()),
+          MaterialPageRoute(builder: (context) => const BottomNavbar()),
         );
       }
     } catch (e) {
@@ -85,10 +83,30 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required FormFieldValidator<String> validator,
+    bool obscureText = false,
+    Widget? suffixIcon,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+          suffixIcon: suffixIcon,
+        ),
+        obscureText: obscureText,
+        validator: validator,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -106,56 +124,40 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 150,
                     color: Colors.indigo,
                   ),
-                  Text(
-                    'REC Events',
-                    style: Styles.headlineStyle1,
-                  ),
-                  Text(
-                    'One Stop for all events in REC',
-                    style: Styles.headlineStyle3,
-                  ),
+                  Text('REC Events', style: Styles.headlineStyle1),
+                  Text('One Stop for all events in REC', style: Styles.headlineStyle3),
                   const Gap(40),
                   SizedBox(
-                    width: screenWidth * 0.9,
-                    child: TextFormField(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: _buildTextField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        border: OutlineInputBorder(),
-                      ),
+                      label: 'Email',
                       validator: _validateEmail,
                     ),
                   ),
                   const Gap(20),
                   SizedBox(
-                    width: screenWidth * 0.9,
-                    child: TextFormField(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: _buildTextField(
                       controller: _passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          onPressed: _togglePasswordVisibility,
-                          icon: Icon(
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
+                      label: 'Password',
+                      validator: _validatePassword,
+                      obscureText: _obscureText,
+                      suffixIcon: IconButton(
+                        onPressed: _togglePasswordVisibility,
+                        icon: Icon(
+                          _obscureText ? Icons.visibility : Icons.visibility_off,
                         ),
                       ),
-                      obscureText: _obscureText,
-                      validator: _validatePassword,
                     ),
                   ),
                   const Gap(20),
                   SizedBox(
-                    width: screenWidth * 0.9,
+                    width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _login,
                       child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : const Text('Login'),
                     ),
                   ),
