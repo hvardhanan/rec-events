@@ -4,6 +4,8 @@ Welcome to **REC Events**—your one-stop shop for all things event-tastic in th
 
 No more spammy WhatsApp groups, last-minute panic, or confusion over "Is this event for CS or ECE?"—REC Events is here to save the day.  
 
+Sidenote, This is a completely new project, Still in it's starting stages.
+
 ---
 
 ## Features  
