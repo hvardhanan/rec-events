@@ -34,12 +34,16 @@ Before we begin, make sure you have:
    ```
 
 2. Install dependencies:  
-   ``` flutter pub get ```
+   ```
+   flutter pub get
+   ```
 
-3. Run the app:  
-   ``` flutter run ```
+4. Run the app:  
+   ```
+   flutter run
+   ```
 
-4. Configure Appwrite:  
+6. Configure Appwrite:  
    - Set up your Appwrite server.  
    - Update the `AppwriteClient` in your project with your server endpoint and project ID.  
 
@@ -62,11 +66,17 @@ Got a brilliant idea? A bug that’s itching to be squashed? We’d love your he
 
 1. Fork this repo. 🏴‍☠️  
 2. Create a branch (be creative with the name, like `fix-broken-things`).  
-   ``` git checkout -b your-awesome-branch ```
-3. Commit your genius:  
-   ``` git commit -m "Added unicorn mode to events" ```  
-4. Push it like Salt-N-Pepa:  
-   ``` git push origin your-awesome-branch ```
+   ```
+   git checkout -b your-awesome-branch
+   ```
+4. Commit your genius:  
+   ```
+   git commit -m "Added unicorn mode to events"
+   ```  
+6. Push it like Salt-N-Pepa:  
+   ```
+   git push origin your-awesome-branch
+   ```
 
 ---
 
